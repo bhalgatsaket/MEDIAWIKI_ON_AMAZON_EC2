@@ -93,19 +93,9 @@ The data bag name is **apps** and the item name is **mediawiki**. Upload this to
 
     knife data bag create apps
     knife data bag from file apps mediawiki.json
+
 	
-Configure SSH Agent
-----
-
-Here we need to configure ssh agent to use your AWS Security SSH keys for Launching instances from knife ec2.
-Give below commands on prompt.
-
-	ssh-agent
-	exec ssh-agent bash
-	ssh-add ~/.ssh/<Security Key>.pem
-	
-
-	Launch Multi-instance Infrastructure
+Launch Multi-instance Infrastructure
 ----
 
 We will launch one database server, two application servers and one load balancer. 
@@ -117,29 +107,6 @@ First, launch the database instance.
 Once the database master is up, launch one node that will create the database schema and set up the database with default data.
 
     knife ec2 server create -r 'role[base],role[mediawiki],recipe[mediawiki::db_bootstrap]' -I ami-37af765e -G default -x ubuntu --node-name Mediawiki01 
-
-If there is a error at the end of instance creation about database creation as shown below,
-
-				INFO: Processing execute[mysql-install-application-privileges] action nothing (database::master line 73)
-				INFO: Processing mysql_database[create mediawiki_production] action create_db (database::master line 84)
-				ERROR: Running exception handlers
-				FATAL: Saving node information to /var/chef/cache/failed-run-data.json
-				ERROR: Exception handlers complete
-				FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
-				FATAL: LoadError: no such file to load -- mysql
-
-then you need to create database by logging on to above created instance (MYSQL) using below steps,
-
-		Login to Instance using SSH
-		Connect to MYSQL using username as root and password as mysql_root ( or as per your configuration which you have done other than default)
-		
-		mysql -u root -p
-		<Enter password as mysql_root>
-		create database mediawiki_production;
-		exit;
-		
-		Exit from instance.
-		
 
 Launch the second application instance w/o the mediawiki::db_bootstrap recipe.
 
