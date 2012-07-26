@@ -94,8 +94,20 @@ The data bag name is **apps** and the item name is **mediawiki**. Upload this to
     knife data bag create apps
     knife data bag from file apps mediawiki.json
 	
-Launch Multi-instance Infrastructure
+Configure SSH Agent
 ----
+
+Here we need to configure ssh agent to use your AWS Security SSH keys for Launching instances from knife ec2.
+Give below commands on prompt.
+
+	ssh-agent
+	exec ssh-agent bash
+	ssh-add ~/.ssh/<Security Key>.pem
+	
+
+	Launch Multi-instance Infrastructure
+----
+
 We will launch one database server, two application servers and one load balancer. 
 
 First, launch the database instance.
